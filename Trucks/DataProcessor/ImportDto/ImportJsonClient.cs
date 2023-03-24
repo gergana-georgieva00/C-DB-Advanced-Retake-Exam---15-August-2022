@@ -13,10 +13,11 @@ namespace Trucks.DataProcessor.ImportDto
         [Required, MinLength(3), MaxLength(40)]
         public string? Name { get; set; }
 
-        [Required]
+        [Required, MinLength(2), MaxLength(40)]
         public string? Nationality { get; set; }
 
+        [Required]
         public string? Type { get; set; }
-        public ICollection<ClientTruck> ClientsTrucks { get; set; }
+        public int[]? Trucks { get; set; }
     }
 }
