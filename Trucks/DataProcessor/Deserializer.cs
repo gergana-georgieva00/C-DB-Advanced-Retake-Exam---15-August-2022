@@ -1,6 +1,7 @@
 ﻿namespace Trucks.DataProcessor
 {
     using System.ComponentModel.DataAnnotations;
+    using System.Text;
     using Data;
     using Newtonsoft.Json;
     using Trucks.Data.Models;
@@ -24,10 +25,50 @@
         {
             var clientDtos = JsonConvert.DeserializeObject<ImportJsonClient[]>(jsonString);
 
+            var sb = new StringBuilder();
+
             var clients = new List<Client>();
             var clientsTrucks = new List<ClientTruck>();
 
+            foreach (var clientDto in clientDtos)
+            {
+                if (!IsValid(clientDto) || clientDto.Type == "usual")
+                {
+                    sb.AppendLine(ErrorMessage); continue;
+                }
 
+                var client = new Client()
+                {
+                    Name = clientDto.Name,
+                    Nationality = clientDto.Nationality,
+                    Type = clientDto.Type
+                };
+
+                foreach (var truckId in clientDto.Trucks.Distinct())
+                {
+                    var truck = context.Trucks.FirstOrDefault(t => t.Id == truckId);
+
+                    if (truck is null)
+                    {
+                        sb.AppendLine(ErrorMessage);
+                        continue;
+                    }
+
+                    client.ClientsTrucks.Add(new ClientTruck()
+                    {
+                        Client = client,
+                        Truck = truck
+                    });
+                }
+
+                clients.Add(client);
+                sb.AppendLine(string.Format(SuccessfullyImportedClient, client.Name, client.ClientsTrucks.Count));
+            }
+
+            context.AddRange(clients);
+            context.SaveChanges();
+
+            return sb.ToString().TrimEnd();
         }
 
         private static bool IsValid(object dto)
