@@ -2,7 +2,9 @@
 {
     using System.ComponentModel.DataAnnotations;
     using Data;
-
+    using Newtonsoft.Json;
+    using Trucks.Data.Models;
+    using Trucks.DataProcessor.ImportDto;
 
     public class Deserializer
     {
@@ -20,7 +22,12 @@
         }
         public static string ImportClient(TrucksContext context, string jsonString)
         {
-            throw new NotImplementedException();
+            var clientDtos = JsonConvert.DeserializeObject<ImportJsonClient[]>(jsonString);
+
+            var clients = new List<Client>();
+            var clientsTrucks = new List<ClientTruck>();
+
+
         }
 
         private static bool IsValid(object dto)
