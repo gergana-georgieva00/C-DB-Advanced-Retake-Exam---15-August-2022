@@ -16,7 +16,17 @@ namespace Trucks.DataProcessor.ImportDto
         [Required,MinLength(2), MaxLength(40)]
         public string? Name { get; set; }
 
+        [XmlElement("Position")]
         public string? Position { get; set; }
-        public ICollection<Truck> Trucks { get; set; }
+
+        [XmlArray("Trucks")]
+        public TruckDto[]? Trucks { get; set; }
+    }
+
+    public class TruckDto
+    {
+        [XmlElement("RegistrationNumber")]
+        [Required, MaxLength(8), RegularExpression(@"[A-Z]{2}\d{4}[A-Z]{2})")]
+        public string RegistrationNumber { get; set; }
     }
 }
