@@ -1,7 +1,9 @@
 ﻿namespace Trucks.DataProcessor
 {
+    using System;
     using System.ComponentModel.DataAnnotations;
     using System.Text;
+    using System.Xml.Serialization;
     using Data;
     using Newtonsoft.Json;
     using Trucks.Data.Models;
@@ -19,8 +21,15 @@
 
         public static string ImportDespatcher(TrucksContext context, string xmlString)
         {
-            throw new NotImplementedException();
+            var despatcherDtos = Deserialize<ImportXmlDespatcher[]>();
         }
+
+        private static T Deserialize<T>(string inputXml, string rootName)
+        {
+            var root = new XmlRootAttribute(rootName);
+            var serializer = new XmlSerializer(typeof(T), root);
+        }
+
         public static string ImportClient(TrucksContext context, string jsonString)
         {
             var clientDtos = JsonConvert.DeserializeObject<ImportJsonClient[]>(jsonString);
