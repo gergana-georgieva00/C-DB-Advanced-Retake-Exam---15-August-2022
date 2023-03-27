@@ -11,7 +11,8 @@
     {
         public static string ExportDespatchersWithTheirTrucks(TrucksContext context)
         {
-            var despatchersDtos = context.Despatchers
+            ExportDespatcherDto[] despatcherDtos = context
+                .Despatchers
                 .Where(d => d.Trucks.Any())
                 .ToArray()
                 .Select(d => new ExportDespatcherDto()
@@ -26,11 +27,11 @@
                     .OrderBy(t => t.RegistrationNumber)
                     .ToArray()
                 })
-                 .OrderByDescending(d => d.Trucks.Count())
+                .OrderByDescending(d => d.Trucks.Count())
                 .ThenBy(d => d.DespatcherName)
                 .ToArray();
 
-            return Serialize<ExportDespatcherDto[]>(despatchersDtos, "Despatchers");
+            return Serialize<ExportDespatcherDto[]>(despatcherDtos, "Despatchers");
         }
 
         private static string Serialize<T>(T dataTransferObjects, string xmlRootAttributeName)
