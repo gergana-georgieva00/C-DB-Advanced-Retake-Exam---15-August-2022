@@ -27,7 +27,7 @@ namespace Trucks.DataProcessor.ImportDto
     public class TruckDto
     {
         [XmlElement("RegistrationNumber")]
-        [Required, StringLength(8), RegularExpression(@"[A-Z]{2}\d{4}[A-Z]{2})")]
+        [Required, StringLength(8), RegularExpression(@"[A-Z]{2}\d{4}[A-Z]{2}")]
         public string? RegistrationNumber { get; set; }
 
         [XmlElement("VinNumber")]
