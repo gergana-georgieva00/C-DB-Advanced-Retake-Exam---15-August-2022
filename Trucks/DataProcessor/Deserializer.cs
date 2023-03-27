@@ -7,6 +7,7 @@
     using Data;
     using Newtonsoft.Json;
     using Trucks.Data.Models;
+    using Trucks.Data.Models.Enums;
     using Trucks.DataProcessor.ImportDto;
 
     public class Deserializer
@@ -42,9 +43,34 @@
                 var trucks = new List<Truck>();
                 foreach (var truckDto in dto.Truck)
                 {
+                    if (!IsValid(truckDto))
+                    {
+                        sb.AppendLine(ErrorMessage);
+                        continue;
+                    }
 
+                    var truck = new Truck()
+                    {
+                        CargoCapacity = truckDto.CargoCapacity,
+                        CategoryType = (CategoryType)truckDto.CategoryType,
+                        TankCapacity = truckDto.TankCapacity,
+                        MakeType = (MakeType)truckDto.MakeType,
+                        RegistrationNumber = truckDto.RegistrationNumber,
+                        VinNumber = truckDto.VinNumber,
+                        Despatcher = despatcher
+                    };
+
+                    trucks.Add(truck);
                 }
+
+                despatcher.Trucks = trucks;
+
+                despatchers.Add(despatcher);
+                sb.AppendLine(String.Format(SuccessfullyImportedDespatcher, despatcher.Name, despatcher.Trucks.Count));
             }
+
+            context.AddRange(despatchers);
+            context.SaveChanges();
 
             return sb.ToString();
         }
