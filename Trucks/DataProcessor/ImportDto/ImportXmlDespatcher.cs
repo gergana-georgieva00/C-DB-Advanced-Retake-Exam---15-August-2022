@@ -40,5 +40,13 @@ namespace Trucks.DataProcessor.ImportDto
         [XmlElement("CargoCapacity")]
         [Range(5000, 29000)]
         public int CargoCapacity  { get; set; }
+
+        [XmlElement("CategoryType")]
+        [Required, Range(0, 3)]
+        public int CategoryType { get; set; }
+
+        [XmlElement("MakeType")]
+        [Required, Range(0, 4)]
+        public int MakeType { get; set; }
     }
 }
