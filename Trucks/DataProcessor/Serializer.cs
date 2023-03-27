@@ -50,7 +50,8 @@
 
         public static string ExportClientsWithMostTrucks(TrucksContext context, int capacity)
         {
-            var clients = context.Clients
+            var clients = context
+                .Clients
                 .Where(c => c.ClientsTrucks.Any(ct => ct.Truck.TankCapacity >= capacity))
                 .ToArray()
                 .Select(c => new
@@ -67,16 +68,16 @@
                         CategoryType = ct.Truck.CategoryType.ToString(),
                         MakeType = ct.Truck.MakeType.ToString()
                     })
-                    .OrderBy(ct => ct.MakeType.ToString())
-                    .ThenByDescending(ct => ct.CargoCapacity.ToString())
+                    .OrderBy(t => t.MakeType)
+                    .ThenByDescending(t => t.CargoCapacity)
                     .ToArray()
                 })
-                .OrderByDescending(c => c.Trucks.Count()).
-                ThenBy(c => c.Name)
+                .OrderByDescending(c => c.Trucks.Count())
+                .ThenBy(c => c.Name)
                 .Take(10)
                 .ToArray();
 
-            return JsonConvert.SerializeObject(clients, Formatting.Indented);    
+            return JsonConvert.SerializeObject(clients, Formatting.Indented);
         }
     }
 }
