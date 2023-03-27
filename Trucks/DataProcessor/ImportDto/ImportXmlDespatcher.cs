@@ -26,7 +26,19 @@ namespace Trucks.DataProcessor.ImportDto
     public class TruckDto
     {
         [XmlElement("RegistrationNumber")]
-        [Required, MaxLength(8), RegularExpression(@"[A-Z]{2}\d{4}[A-Z]{2})")]
-        public string RegistrationNumber { get; set; }
+        [Required, StringLength(8), RegularExpression(@"[A-Z]{2}\d{4}[A-Z]{2})")]
+        public string? RegistrationNumber { get; set; }
+
+        [XmlElement("VinNumber")]
+        [Required, StringLength(17)]
+        public string? VinNumber { get; set; }
+
+        [XmlElement("TankCapacity")]
+        [Range(950, 1420)]
+        public int TankCapacity  { get; set; }
+
+        [XmlElement("CargoCapacity")]
+        [Range(5000, 29000)]
+        public int CargoCapacity  { get; set; }
     }
 }
