@@ -21,7 +21,32 @@
 
         public static string ImportDespatcher(TrucksContext context, string xmlString)
         {
-            var despatcherDtos = Deserialize<ImportXmlDespatcher[]>();
+            var despatcherDtos = Deserialize<ImportXmlDespatcher[]>(xmlString, "Despatchers");
+            var sb = new StringBuilder();
+            var despatchers = new List<Despatcher>();
+
+            foreach (var dto in despatcherDtos)
+            {
+                if (!IsValid(dto) || string.IsNullOrEmpty(dto.Position))
+                {
+                    sb.AppendLine(ErrorMessage);
+                    continue;
+                }
+
+                var despatcher = new Despatcher()
+                {
+                    Name = dto.Name,
+                    Position = dto.Position
+                };
+
+                var trucks = new List<Truck>();
+                foreach (var truckDto in dto.Truck)
+                {
+
+                }
+            }
+
+            return sb.ToString();
         }
 
         private static T Deserialize<T>(string inputXml, string rootName)

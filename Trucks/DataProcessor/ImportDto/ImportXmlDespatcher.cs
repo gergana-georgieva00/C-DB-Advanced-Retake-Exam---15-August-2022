@@ -20,9 +20,10 @@ namespace Trucks.DataProcessor.ImportDto
         public string? Position { get; set; }
 
         [XmlArray("Trucks")]
-        public TruckDto[]? Trucks { get; set; }
+        public TruckDto[]? Truck { get; set; }
     }
 
+    [XmlType("Truck")]
     public class TruckDto
     {
         [XmlElement("RegistrationNumber")]
