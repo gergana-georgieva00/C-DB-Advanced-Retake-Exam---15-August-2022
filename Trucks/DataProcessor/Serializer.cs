@@ -2,13 +2,50 @@
 {
     using Data;
     using Newtonsoft.Json;
+    using System.Text;
+    using System.Xml.Serialization;
     using Trucks.Data.Models.Enums;
+    using Trucks.DataProcessor.ExportDto;
 
     public class Serializer
     {
         public static string ExportDespatchersWithTheirTrucks(TrucksContext context)
         {
-            throw new NotImplementedException();
+            var despatchersDtos = context.Despatchers
+                .Where(d => d.Trucks.Any())
+                .ToArray()
+                .Select(d => new ExportDespatcherDto()
+                {
+                    TrucksCount = d.Trucks.Count(),
+                    DespatcherName = d.Name,
+                    Trucks = d.Trucks.Select(t => new ExportTruckDto
+                    {
+                        Make = t.MakeType.ToString(),
+                        RegistrationNumber = t.RegistrationNumber
+                    })
+                    .OrderBy(t => t.RegistrationNumber)
+                    .ToArray()
+                })
+                 .OrderByDescending(d => d.Trucks.Count())
+                .ThenBy(d => d.DespatcherName)
+                .ToArray();
+
+            return Serialize<ExportDespatcherDto[]>(despatchersDtos, "Despatchers");
+        }
+
+        private static string Serialize<T>(T dataTransferObjects, string xmlRootAttributeName)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(T), new XmlRootAttribute(xmlRootAttributeName));
+
+            StringBuilder sb = new StringBuilder();
+            using var write = new StringWriter(sb);
+
+            XmlSerializerNamespaces xmlNamespaces = new XmlSerializerNamespaces();
+            xmlNamespaces.Add(string.Empty, string.Empty);
+
+            serializer.Serialize(write, dataTransferObjects, xmlNamespaces);
+
+            return sb.ToString();
         }
 
         public static string ExportClientsWithMostTrucks(TrucksContext context, int capacity)
