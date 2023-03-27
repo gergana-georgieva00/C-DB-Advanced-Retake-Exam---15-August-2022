@@ -30,6 +30,10 @@
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<ClientTruck>(entity =>
+            {
+                entity.HasKey(ct => new { ct.TruckId, ct.ClientId });
+            });
         }
     }
 }

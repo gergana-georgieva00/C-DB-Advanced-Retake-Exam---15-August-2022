@@ -72,7 +72,7 @@
             context.AddRange(despatchers);
             context.SaveChanges();
 
-            return sb.ToString();
+            return sb.ToString().TrimEnd();
         }
 
         private static T Deserialize<T>(string inputXml, string rootName)
